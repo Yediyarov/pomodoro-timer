@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
 run: ## Run the application using uvicorn with provided arguments or defaults
-	poetry run unicorn main:app --host 0.0.0.0 --port 8000
+	poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 install: ## Install a dependency using poetry
 	@echo "Installing dependency $(LIBRARY)"
