@@ -5,10 +5,14 @@ description = ""
 authors = [
     {name = "Yediyarov",email = "yediyarov.xeyal@gmail.com"}
 ]
+package-mode = false
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi (>=0.115.8,<0.116.0)"
+    "fastapi (>=0.115.8,<0.116.0)",
+    "uvicorn (>=0.34.0,<0.35.0)",
+    "sqlalchemy (>=2.0.38,<3.0.0)",
+    "alembic (>=1.14.1,<2.0.0)"
 ]
 
 
