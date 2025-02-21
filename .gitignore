@@ -28,3 +28,13 @@ archive.zip
 
 # macOS
 .DS_Store
+
+*.local*
+*.env*
+
+# Ignore all .env files except examples
+.*.env
+!.env.example
+
+# But track docker-compose override files
+!docker-compose.*.yml 
