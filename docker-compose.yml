@@ -1,15 +1,26 @@
 # Use postgres/example user/password credentials
-version: '3.9'
+version: '3.8'
 
 services:
 
   db:
     container_name: postgres-db
     image: postgres:16.2
+    env_file:
+      - .${ENV:-local}.env
+    volumes:
+      - ${POSTGRES_DATA_PATH:-./data/postgres}:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    restart: ${DOCKER_RESTART_POLICY:-no}  # 'always' for prod, 'no' for local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cache:
+    image: redis:7.2.4-alpine
     restart: always
     ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: pomodoro
+      - "6379:6379"
