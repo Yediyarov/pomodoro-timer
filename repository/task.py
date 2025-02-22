@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from schema.task import TaskSchema
+from schema.task import TaskSchema, TaskCreateSchema
 from database.models import Task, Category
 
 class TaskRepository:
@@ -19,7 +19,7 @@ class TaskRepository:
         tasks: list[Task] = self.db_session.execute(select(Task)).scalars().all()
         return [TaskSchema.model_validate(task) for task in tasks]
 
-    def create_task(self, task: TaskSchema) -> TaskSchema:
+    def create_task(self, task: TaskCreateSchema) -> TaskSchema:
         task_model = Task(**task.model_dump())
         self.db_session.add(task_model)
         self.db_session.commit()
