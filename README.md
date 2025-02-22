@@ -32,7 +32,7 @@ A FastAPI-based backend service for managing Pomodoro tasks with Redis caching a
 
 1. Clone the repository:
 
-```
+```bash
 git clone https://github.com/yourusername/pomodoro-timer.git
 cd pomodoro-timer
 ```
@@ -40,7 +40,9 @@ cd pomodoro-timer
 2. Install dependencies:
 
 
-```poetry install```
+```bash
+poetry install
+```
 
 3. Create environment file:
    - Copy `.env.example` to `.local.env` for local development
@@ -52,15 +54,21 @@ cd pomodoro-timer
 
 1. Start the services:
 
-```make docker-up ENV=local```
+```bash
+make docker-up ENV=local
+```
 
 2. Apply database migrations:
 
-```make migrate-apply ENV=local```
+```bash
+make migrate-apply ENV=local
+```
 
 3. Run the application:
 
-```make run ENV=local```
+```bash
+make run ENV=local
+```
 
 The API will be available at `http://localhost:8000`
 
@@ -69,10 +77,17 @@ The API will be available at `http://localhost:8000`
 1. Create `.prod.env` with production settings
 2. Run:
 
-```make docker-up ENV=prod```
-```make migrate-apply ENV=prod```
-```make run ENV=prod```
+```bash
+make docker-up ENV=prod
+```
 
+```bash
+make migrate-apply ENV=prod
+```
+
+```bash
+make run ENV=prod
+```
 ## API Endpoints
 
 - `GET /tasks/all` - Get all tasks
@@ -100,15 +115,21 @@ pomodoro-timer/
 
 ### Creating New Migrations
 
-```make migrate-create MIGRATION="description_of_changes"```
+```bash
+make migrate-create MIGRATION="description_of_changes"
+```
 
 ### Adding Dependencies
 
-```make install LIBRARY=package_name```
+```bash
+make install LIBRARY=package_name
+```
 
 ### Running Tests
 
-```poetry run pytest```
+```bash
+poetry run pytest
+```
 
 ## Environment Variables
 
