@@ -12,6 +12,9 @@ class TaskCache:
             return [TaskSchema.model_validate_json(task) for task in task_json]
 
     def set_tasks(self, tasks: list[TaskSchema]):
-        tasks_json = [task.json() for task in tasks]
+        # First, clear existing tasks
         with self.redis as redis:
-            redis.lpush("tasks", *tasks_json)
+            redis.delete("tasks")
+            # Convert tasks to JSON and push them one by one
+            for task in tasks:
+                redis.rpush("tasks", task.model_dump_json())
