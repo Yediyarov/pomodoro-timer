@@ -15,12 +15,13 @@ SessionLocal = sessionmaker(
     bind=engine,
 )
 
-def get_db_session() -> Generator[Session, None, None]:
+def get_db_session() -> Session:
     session = SessionLocal()
     try:
-        yield session
-    finally:
+        return session
+    except Exception:
         session.close()
+        raise
 
 
 
