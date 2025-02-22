@@ -1,7 +1,7 @@
 from enum import Enum
 import os
-from pydantic import BaseSettings, Field
-
+from pydantic import Field
+from pydantic_settings import BaseSettings
 
 class EnvironmentType(str, Enum):
     LOCAL = "local"
