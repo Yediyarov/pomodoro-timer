@@ -1,40 +1,50 @@
-.idea
-.ipynb_checkpoints
-.mypy_cache
-.vscode
-__pycache__
-.pytest_cache
-htmlcov
-dist
-site
-.coverage*
-coverage.xml
-.netlify
-test.db
-log.txt
-Pipfile.lock
-env3.*
-env
-docs_build
-site_build
-venv
-docs.zip
-archive.zip
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+ENV/
 
-# vim temporary files
-*~
-.*.sw?
-.cache
+# Poetry
+poetry.lock
+dist/
+*.egg-info/
 
-# macOS
-.DS_Store
+# Database
+data/
+*.db
+*.sqlite3
 
-*.local*
-*.env*
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Ignore all .env files except examples
-.*.env
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+*.env
 !.env.example
 
-# But track docker-compose override files
-!docker-compose.*.yml 
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Alembic
+alembic/versions/*
+!alembic/versions/.gitkeep
+
+# Cache
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
