@@ -37,12 +37,18 @@ class TaskRepository:
         self.db_session.refresh(existing_task)
         return TaskSchema.model_validate(existing_task)
         
-    def delete_task(self, task_id: int) -> None:
+    def delete_task(self, task_id: int) -> TaskSchema:
         task = self.db_session.get(Task, task_id)
         if not task:
             raise ValueError(f"Task with id {task_id} not found")
+        
+        # Create TaskSchema before deletion
+        task_schema = TaskSchema.model_validate(task)
+        
         self.db_session.delete(task)
         self.db_session.commit()
+        
+        return task_schema
 
     def get_task_by_category(self, category_name: str) -> list[TaskSchema]:
         query = select(Task).join(Category, Task.category_id == Category.id).where(Category.name == category_name)
