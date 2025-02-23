@@ -37,4 +37,23 @@ class TaskService:
         
         return created_task
         
+    def update_task(self, task_id: int, task: TaskSchema) -> TaskSchema:
+        # Update task in database
+        updated_task = self.task_repository.update_task(task_id, task)
         
+        # Update cache with new task list
+        tasks = self.task_repository.get_all_tasks()
+        tasks_schema = [TaskSchema.model_validate(task) for task in tasks]
+        self.task_cache.set_tasks(tasks_schema)
+        
+        return updated_task
+    
+    def delete_task(self, task_id: int) -> TaskSchema:
+        # Delete task and get the deleted task data
+        deleted_task = self.task_repository.delete_task(task_id)
+        
+        # Update cache with new task list
+        tasks = self.task_repository.get_all_tasks()
+        self.task_cache.set_tasks(tasks)
+        
+        return deleted_task
