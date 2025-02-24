@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     CACHE_PORT: int = Field(default=6379)
     CACHE_DB: int = Field(default=0)
 
+    # JWT settings
+    JWT_SECRET: str = Field(default="your_secret_key")
+    JWT_ALGORITHM: str = Field(default="HS256")
+
+
     class Config:
         @classmethod
         def customise_sources(
