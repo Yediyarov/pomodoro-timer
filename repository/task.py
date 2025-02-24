@@ -19,8 +19,8 @@ class TaskRepository:
         tasks: list[Task] = self.db_session.execute(select(Task)).scalars().all()
         return [TaskSchema.model_validate(task) for task in tasks]
 
-    def create_task(self, task: TaskCreateSchema) -> TaskSchema:
-        task_model = Task(**task.model_dump())
+    def create_task(self, task: TaskCreateSchema, user_id: int) -> TaskSchema:
+        task_model = Task(**task.model_dump(), user_id=user_id)
         self.db_session.add(task_model)
         self.db_session.commit()
         return TaskSchema.model_validate(task_model)
