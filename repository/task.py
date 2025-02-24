@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from schema.task import TaskSchema, TaskCreateSchema
-from database.models import Task, Category
+from models import Task, Category
 
 class TaskRepository:
 
