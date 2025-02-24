@@ -10,3 +10,6 @@ class InvalidCredentials(Exception):
 class InvalidToken(Exception):
     detail = "Invalid token"
 
+class TokenExpired(Exception):
+    detail = "Token expired"
+
