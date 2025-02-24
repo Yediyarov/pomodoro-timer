@@ -2,7 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from database import Base
 from datetime import datetime
 from typing import Optional
-
+from sqlalchemy import ForeignKey
 
 class Task(Base):
     __tablename__ = "Tasks"
@@ -11,6 +11,7 @@ class Task(Base):
     title: Mapped[str]
     pomodoro_count: Mapped[int]
     category_id: Mapped[int] = mapped_column(nullable=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("UserProfile.id", ondelete="CASCADE"))
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
