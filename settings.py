@@ -1,8 +1,8 @@
 from enum import Enum
 import os
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings
-
+from typing import Optional
 class EnvironmentType(str, Enum):
     LOCAL = "local"
     PROD = "prod"
@@ -30,25 +30,29 @@ class Settings(BaseSettings):
     JWT_SECRET: str = Field(default="your_secret_key")
     JWT_ALGORITHM: str = Field(default="HS256")
 
+    # Google settings
+    GOOGLE_CLIENT_ID: Optional[str] = Field(default=None)
+    GOOGLE_SECRET_KEY: Optional[str] = Field(default=None)
+    GOOGLE_REDIRECT_URI: Optional[str] = Field(default=None)
+    GOOGLE_TOKEN_URL: str = Field(default="https://accounts.google.com/o/oauth2/token")
+    GOOGLE_USER_INFO_URL: str = Field(default="https://www.googleapis.com/oauth2/v3/userinfo")
+
+    # Add this to store the current env file
+    ENV_FILE: str = f".{os.getenv('ENV', 'local')}.env"
 
     class Config:
-        @classmethod
-        def customise_sources(
-            cls,
-            init_settings,
-            env_settings,
-            file_secret_settings,
-        ):
-            # Use .local.env by default, .prod.env if ENV=prod
-            # Set the env file path based on environment
-            env_file = f".{os.getenv('ENV', 'local')}.env"
-            # Configure env_file in Config class
-            cls.env_file = env_file
-            return (
-                init_settings,
-                env_settings,
-                file_secret_settings,
+        env_file = f".{os.getenv('ENV', 'local')}.env"
+        extra = "allow"
+
+    @model_validator(mode='after')
+    def validate_google_settings(self):
+        if not all([self.GOOGLE_CLIENT_ID, self.GOOGLE_SECRET_KEY, self.GOOGLE_REDIRECT_URI]):
+            raise ValueError(
+                "Required Google OAuth settings are missing. "
+                f"Please check your {self.Config.env_file} file contains GOOGLE_CLIENT_ID, "
+                "GOOGLE_SECRET_KEY, and GOOGLE_REDIRECT_URI"
             )
+        return self
 
     @property
     def is_production(self) -> bool:
@@ -64,8 +68,10 @@ class Settings(BaseSettings):
             f"{self.DB_NAME}"
         )
 
+    @property
+    def get_google_redirect_url(self) -> str:
+        return f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={self.GOOGLE_CLIENT_ID}&redirect_uri={self.GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
 
 # Create a global settings instance
 settings = Settings()
-    
-        
+
