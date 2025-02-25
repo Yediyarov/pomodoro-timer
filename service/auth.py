@@ -6,10 +6,13 @@ from repository.user import UserProfile
 from jose import jwt
 from datetime import datetime, timedelta
 from settings import Settings
+from client.google import GoogleClient
+from schema import UserCreateSchema
 @dataclass
 class AuthService:
     user_repository: UserRepository
     settings: Settings
+    google_client: GoogleClient
     
     def login(self, username: str, password: str) -> UserLoginSchema:
         user = self.user_repository.get_user_by_username(username)
@@ -42,3 +45,22 @@ class AuthService:
         if payload['exp'] < datetime.utcnow().timestamp():
             raise TokenExpired
         return payload["user_id"]
+    
+    
+    def get_google_redirect_url(self) -> str:
+        return self.settings.get_google_redirect_url
+    
+    def google_auth(self, code: str) -> str:
+        user_data = self.google_client.get_user_info(code)
+        if user := self.user_repository.get_user_by_email(user_data.email):
+            access_token = self.generate_access_token(user.id)
+            return UserLoginSchema(id=user.id, access_token=access_token)
+
+        google_user_data = UserCreateSchema(  
+            email=user_data.email,
+            name=user_data.name,
+            google_access_token=user_data.access_token
+        )
+        created_user = self.user_repository.create_user(google_user_data)
+        access_token = self.generate_access_token(created_user.id)
+        return UserLoginSchema(id=created_user.id, access_token=access_token)
