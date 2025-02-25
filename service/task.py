@@ -26,9 +26,9 @@ class TaskService:
             self.task_cache.set_tasks(tasks)
             return tasks
         
-    def create_task(self, task: TaskCreateSchema) -> TaskSchema:
+    def create_task(self, body: TaskCreateSchema, user_id: int) -> TaskSchema:
         # Create task in database
-        created_task = self.task_repository.create_task(task)
+        created_task = self.task_repository.create_task(body, user_id)
         
         # Update cache with new task list
         tasks = self.task_repository.get_all_tasks()

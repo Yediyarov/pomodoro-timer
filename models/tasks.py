@@ -1,17 +1,8 @@
+from sqlalchemy.orm import Mapped, mapped_column
+from database import Base
 from datetime import datetime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
-from typing import Any, Optional
-
-
-
-class Base(DeclarativeBase):
-    id: Any
-    __name__: str
-    
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
-
+from typing import Optional
+from sqlalchemy import ForeignKey
 
 class Task(Base):
     __tablename__ = "Tasks"
@@ -20,6 +11,7 @@ class Task(Base):
     title: Mapped[str]
     pomodoro_count: Mapped[int]
     category_id: Mapped[int] = mapped_column(nullable=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("UserProfile.id", ondelete="CASCADE"))
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now)
 

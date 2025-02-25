@@ -1,27 +1,10 @@
-from typing import Generator
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
-from settings import settings
+from sqlalchemy.orm import DeclarativeBase, declared_attr
+from typing import Any
 
-engine = create_engine(
-    settings.get_db_url,
-    echo=settings.DB_ECHO,
-    pool_pre_ping=True,
-)
-
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
-
-def get_db_session() -> Session:
-    session = SessionLocal()
-    try:
-        return session
-    except Exception:
-        session.close()
-        raise
-
-
-
+class Base(DeclarativeBase):
+    id: Any
+    __name__: str
+    
+    @declared_attr
+    def __tablename__(cls) -> str:
+        return cls.__name__.lower()
