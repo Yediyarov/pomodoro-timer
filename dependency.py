@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from settings import Settings
 from fastapi import security
 from exeptions import InvalidToken, TokenExpired
-
+from client.google import GoogleClient
 
 def get_tasks_repository(db_session: Session = Depends(get_db_session)) -> TaskRepository:
     return TaskRepository(db_session=db_session)
@@ -28,11 +28,15 @@ def get_user_repository(db_session: Session = Depends(get_db_session)) -> UserRe
 def get_settings() -> Settings:
     return Settings()
 
+def get_google_client(settings: Settings = Depends(get_settings)) -> GoogleClient:
+    return GoogleClient(settings)
+
 def get_auth_service(
         user_repository: UserRepository = Depends(get_user_repository),
-        settings: Settings = Depends(get_settings)
+        settings: Settings = Depends(get_settings),
+        google_client: GoogleClient = Depends(get_google_client)
 ) -> AuthService:
-    return AuthService(user_repository, settings)
+    return AuthService(user_repository, settings, google_client)
 
 def get_user_service(
         user_repository: UserRepository = Depends(get_user_repository),
