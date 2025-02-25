@@ -1,17 +1,18 @@
 from dataclasses import dataclass
 from settings import Settings
 import requests
+from schema import GoogleAuthSchema
 
 @dataclass
 class GoogleClient:
     settings: Settings
 
-    def get_user_info(self, code: str) -> dict:
+    def get_user_info(self, code: str) -> GoogleAuthSchema :
         access_token = self._get_access_token(code)
         user_info = requests.get(
             self.settings.GOOGLE_USER_INFO_URL, 
             headers={"Authorization": f"Bearer {access_token}"})
-        return user_info.json()
+        return GoogleAuthSchema(**user_info.json(), access_token=access_token)
     
     def _get_access_token(self, code: str) -> str:
         data ={
