@@ -2,8 +2,11 @@
 
 ENV ?= local
 
-run: ## Run the application using uvicorn with provided arguments or defaults
-	ENV=$(ENV) poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# run: ## Run the application using uvicorn with provided arguments or defaults
+# 	ENV=$(ENV) poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+run: ## Run the application using gunicorn
+	ENV=$(ENV) gunicorn main:app -c infra/gunicorn.conf.py
 
 install: ## Install a dependency using poetry
 	@echo "Installing dependency $(LIBRARY)"
