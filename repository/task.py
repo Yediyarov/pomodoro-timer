@@ -20,16 +20,16 @@ class TaskRepository:
         tasks: list[Task] = (await self.db_session.execute(select(Task))).scalars().all()
         return [TaskSchema.model_validate(task) for task in tasks]
 
-    async def create_task(self, task: TaskCreateSchema, user_id: int) -> TaskSchema:
+    async def create_task(self, task: TaskCreateSchema, user_id: int) -> int:
         query = (
             insert(Task)
             .values(title=task.title, pomodoro_count=task.pomodoro_count, category_id=task.category_id, user_id=user_id)
             .returning(Task.id)
         )
         async with self.db_session as session:
-            task_model = (await session.execute(query)).scalar_one_or_none()
+            task_id = (await session.execute(query)).scalar_one_or_none()
             await session.commit()
-            return TaskSchema.model_validate(task_model)
+            return task_id
 
     async def update_task(self, task_id: int, task: TaskSchema) -> TaskSchema:
         existing_task = await self.db_session.get(Task, task_id)
