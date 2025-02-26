@@ -8,6 +8,7 @@ from settings import Settings
 from fastapi import security
 from exeptions import InvalidToken, TokenExpired
 from client.google import GoogleClient
+import httpx
 
 def get_tasks_repository(db_session: Session = Depends(get_db_session)) -> TaskRepository:
     return TaskRepository(db_session=db_session)
@@ -28,8 +29,14 @@ def get_user_repository(db_session: Session = Depends(get_db_session)) -> UserRe
 def get_settings() -> Settings:
     return Settings()
 
-def get_google_client(settings: Settings = Depends(get_settings)) -> GoogleClient:
-    return GoogleClient(settings)
+def get_async_client() -> httpx.AsyncClient:
+    return httpx.AsyncClient()
+
+def get_google_client(
+        settings: Settings = Depends(get_settings),
+        async_client: httpx.AsyncClient = Depends(get_async_client)
+        ) -> GoogleClient:
+    return GoogleClient(settings, async_client)
 
 def get_auth_service(
         user_repository: UserRepository = Depends(get_user_repository),
