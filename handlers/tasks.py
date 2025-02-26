@@ -10,7 +10,7 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 async def get_tasks(
     task_service: Annotated[TaskService, Depends(get_task_service)]
     ):
-    return task_service.get_all_tasks()
+    return await task_service.get_all_tasks()
 
 
 @router.post("/", response_model=TaskSchema)
@@ -19,7 +19,7 @@ async def create_task(
     task_service: Annotated[TaskService, Depends(get_task_service)],
     user_id: Annotated[int, Depends(get_request_user_id)]
 ):
-    return task_service.create_task(body=body, user_id=user_id)
+    return await task_service.create_task(body=body, user_id=user_id)
 
 
 @router.put("/{task_id}", response_model=TaskSchema)
@@ -28,7 +28,7 @@ async def update_task(
     task: TaskSchema,
     task_service: Annotated[TaskService, Depends(get_task_service)]
 ):
-    return task_service.update_task(task_id, task)
+    return await task_service.update_task(task_id, task)
 
 
 @router.delete("/{task_id}", response_model=TaskSchema)
@@ -36,4 +36,4 @@ async def delete_task(
     task_id: int,
     task_service: Annotated[TaskService, Depends(get_task_service)]
 ):
-    return task_service.delete_task(task_id)
+    return await task_service.delete_task(task_id)

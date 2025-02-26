@@ -9,5 +9,5 @@ from fastapi import Depends
 router = APIRouter(prefix="/user", tags=["users"])
 
 @router.post("/", response_model=UserLoginSchema)
-def register(body: UserRegisterSchema, user_service: Annotated[UserService, Depends(get_user_service)]):
-    return user_service.create_user(body.username, body.password)
+async def register(body: UserRegisterSchema, user_service: Annotated[UserService, Depends(get_user_service)]):
+    return await user_service.create_user(body.username, body.password)

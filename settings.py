@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     DB_USER: str = Field(default="postgres")
     DB_PASSWORD: str = Field(default="password")
     DB_NAME: str = Field(default="pomodoro")
-    DB_DRIVER: str = Field(default="postgresql+psycopg2")
-    DB_ECHO: bool = Field(default=False)  # SQL query logging
+    DB_DRIVER: str = Field(default="postgresql+asyncpg")
+    DB_ECHO: bool = Field(default=True)  # SQL query logging
 
     # Redis settings (if you're using Redis)
     CACHE_HOST: str = Field(default="localhost")

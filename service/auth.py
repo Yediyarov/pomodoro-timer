@@ -14,8 +14,8 @@ class AuthService:
     settings: Settings
     google_client: GoogleClient
     
-    def login(self, username: str, password: str) -> UserLoginSchema:
-        user = self.user_repository.get_user_by_username(username)
+    async def login(self, username: str, password: str) -> UserLoginSchema:
+        user = await self.user_repository.get_user_by_username(username)
         self._validate_auth_user(user, password)
         access_token = self.generate_access_token(user_id=user.id)
         return UserLoginSchema(id=user.id, access_token=access_token)
@@ -52,7 +52,7 @@ class AuthService:
     
     async def google_auth(self, code: str) -> str:
         user_data = await self.google_client.get_user_info(code)
-        if user := self.user_repository.get_user_by_email(user_data.email):
+        if user := await self.user_repository.get_user_by_email(user_data.email):
             access_token = self.generate_access_token(user.id)
             return UserLoginSchema(id=user.id, access_token=access_token)
 
@@ -61,6 +61,6 @@ class AuthService:
             name=user_data.name,
             google_access_token=user_data.access_token
         )
-        created_user = self.user_repository.create_user(google_user_data)
+        created_user = await self.user_repository.create_user(google_user_data)
         access_token = self.generate_access_token(created_user.id)
         return UserLoginSchema(id=created_user.id, access_token=access_token)

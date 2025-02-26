@@ -1,57 +1,63 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-
+from sqlalchemy import select, insert
+from sqlalchemy.ext.asyncio import AsyncSession
 from schema.task import TaskSchema, TaskCreateSchema
 from models import Task, Category
+from dataclasses import dataclass
 
+@dataclass
 class TaskRepository:
 
-    def __init__(self, db_session: Session):
+    def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    def get_task(self, task_id: int) -> TaskSchema:
-        task: Task = self.db_session.execute(
+    async def get_task(self, task_id: int) -> TaskSchema:
+        task: Task = (await self.db_session.execute(
             select(Task).where(Task.id == task_id)
-        ).scalar_one()
+        )).scalar_one()
         return TaskSchema.model_validate(task)
 
-    def get_all_tasks(self) -> list[TaskSchema]:
-        tasks: list[Task] = self.db_session.execute(select(Task)).scalars().all()
+    async def get_all_tasks(self) -> list[TaskSchema]:
+        tasks: list[Task] = (await self.db_session.execute(select(Task))).scalars().all()
         return [TaskSchema.model_validate(task) for task in tasks]
 
-    def create_task(self, task: TaskCreateSchema, user_id: int) -> TaskSchema:
-        task_model = Task(**task.model_dump(), user_id=user_id)
-        self.db_session.add(task_model)
-        self.db_session.commit()
-        return TaskSchema.model_validate(task_model)
+    async def create_task(self, task: TaskCreateSchema, user_id: int) -> TaskSchema:
+        query = (
+            insert(Task)
+            .values(title=task.title, pomodoro_count=task.pomodoro_count, category_id=task.category_id, user_id=user_id)
+            .returning(Task.id)
+        )
+        async with self.db_session as session:
+            task_model = (await session.execute(query)).scalar_one_or_none()
+            await session.commit()
+            return TaskSchema.model_validate(task_model)
 
-    def update_task(self, task_id: int, task: TaskSchema) -> TaskSchema:
-        existing_task = self.db_session.get(Task, task_id)
+    async def update_task(self, task_id: int, task: TaskSchema) -> TaskSchema:
+        existing_task = await self.db_session.get(Task, task_id)
         if not existing_task:
             raise ValueError(f"Task with id {task_id} not found")
         
         for field, value in task.model_dump().items():
             setattr(existing_task, field, value)
 
-        self.db_session.commit()
-        self.db_session.refresh(existing_task)
+        await self.db_session.commit()
+        await self.db_session.refresh(existing_task)
         return TaskSchema.model_validate(existing_task)
         
-    def delete_task(self, task_id: int) -> TaskSchema:
-        task = self.db_session.get(Task, task_id)
+    async def delete_task(self, task_id: int) -> TaskSchema:
+        task = await self.db_session.get(Task, task_id)
         if not task:
             raise ValueError(f"Task with id {task_id} not found")
         
         # Create TaskSchema before deletion
         task_schema = TaskSchema.model_validate(task)
         
-        self.db_session.delete(task)
-        self.db_session.commit()
+        await self.db_session.delete(task)
+        await self.db_session.commit()
         
         return task_schema
 
-    def get_task_by_category(self, category_name: str) -> list[TaskSchema]:
+    async def get_task_by_category(self, category_name: str) -> list[TaskSchema]:
         query = select(Task).join(Category, Task.category_id == Category.id).where(Category.name == category_name)
-        with self.db_session as session:
-            tasks: list[Task] = session.execute(query).scalars().all()
+        async with self.db_session as session:
+            tasks: list[Task] = (await session.execute(query)).scalars().all()
             return tasks
