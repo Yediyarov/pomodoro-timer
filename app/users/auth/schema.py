@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class GoogleAuthSchema(BaseModel):
     id: int | None = None
@@ -11,3 +11,5 @@ class GoogleAuthSchema(BaseModel):
 class UserLoginSchema(BaseModel):
     id: int
     access_token: str
+
+    model_config = ConfigDict(from_attributes=True)

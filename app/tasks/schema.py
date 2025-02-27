@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class TaskSchema(BaseModel):
@@ -8,8 +8,7 @@ class TaskSchema(BaseModel):
     category_id: int
     user_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
     @model_validator(mode="after")
     def validate_name(self):
@@ -29,5 +28,4 @@ class CategorySchema(BaseModel):
     name: str | None = None
     type: str | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
