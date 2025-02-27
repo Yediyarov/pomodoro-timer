@@ -4,7 +4,8 @@ from app.users.user_profile.repository import UserRepository
 from app.exeptions import UserNotFound, InvalidCredentials, TokenExpired, InvalidToken
 from app.users.user_profile.models import UserProfile
 from jose import jwt
-from datetime import datetime, timedelta
+from datetime import datetime as dt, timedelta
+from datetime import timezone
 from app.settings import Settings
 from app.users.auth.client.google import GoogleClient
 from app.users.user_profile.schema import UserCreateSchema
@@ -30,7 +31,7 @@ class AuthService:
         
 
     def generate_access_token(self,user_id: int) -> str:
-        expires_data_unix = (datetime.utcnow() + timedelta(days=7)).timestamp()
+        expires_data_unix = (dt.now(tz=timezone.utc) + timedelta(days=7)).timestamp()
         token = jwt.encode(
             {"user_id": user_id, "exp": expires_data_unix},
             self.settings.JWT_SECRET,
@@ -43,7 +44,7 @@ class AuthService:
             payload = jwt.decode(token, self.settings.JWT_SECRET, algorithms=[self.settings.JWT_ALGORITHM])
         except jwt.JWTError:
             raise InvalidToken
-        if payload['exp'] < datetime.utcnow().timestamp():
+        if payload['exp'] < dt.utcnow().timestamp():
             raise TokenExpired
         return payload["user_id"]
     
