@@ -171,7 +171,7 @@ description = "Foreign Function Interface for Python calling C code."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\""
+markers = "os_name == \"nt\" and implementation_name != \"pypy\" or platform_python_implementation != \"PyPy\""
 files = [
     {file = "cffi-1.17.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:df8b1c11f177bc2313ec4b2d46baec87a5f3e71fc8b45dab2ee7cae86d9aba14"},
     {file = "cffi-1.17.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:8f2cdc858323644ab277e9bb925ad72ae0e67f69e804f4898c070998d50b1a67"},
@@ -440,6 +440,18 @@ sdist = ["build (>=1.0.0)"]
 ssh = ["bcrypt (>=3.1.5)"]
 test = ["certifi (>=2024)", "cryptography-vectors (==44.0.1)", "pretend (>=0.7)", "pytest (>=7.4.0)", "pytest-benchmark (>=4.0)", "pytest-cov (>=2.10.1)", "pytest-xdist (>=3.5.0)"]
 test-randomorder = ["pytest-randomly"]
+
+[[package]]
+name = "decorator"
+version = "5.2.1"
+description = "Decorators for Humans"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "decorator-5.2.1-py3-none-any.whl", hash = "sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a"},
+    {file = "decorator-5.2.1.tar.gz", hash = "sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360"},
+]
 
 [[package]]
 name = "ecdsa"
@@ -801,6 +813,21 @@ files = [
 ]
 
 [[package]]
+name = "outcome"
+version = "1.3.0.post0"
+description = "Capture the outcome of Python function calls."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "outcome-1.3.0.post0-py2.py3-none-any.whl", hash = "sha256:e771c5ce06d1415e356078d3bdd68523f284b4ce5419828922b6871e65eda82b"},
+    {file = "outcome-1.3.0.post0.tar.gz", hash = "sha256:9dcf02e65f2971b80047b377468e72a268e15c0af3cf1238e6ff14f7f91143b8"},
+]
+
+[package.dependencies]
+attrs = ">=19.2.0"
+
+[[package]]
 name = "packaging"
 version = "24.2"
 description = "Core utilities for Python packages"
@@ -925,7 +952,7 @@ description = "C parser in Python"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "platform_python_implementation != \"PyPy\""
+markers = "os_name == \"nt\" and implementation_name != \"pypy\" or platform_python_implementation != \"PyPy\""
 files = [
     {file = "pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc"},
     {file = "pycparser-2.22.tar.gz", hash = "sha256:491c8be9c040f5390f5bf44a5b07752bd07f56edf992381b05c701439eec10f6"},
@@ -1108,6 +1135,64 @@ pluggy = ">=1.5,<2"
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-asyncio"
+version = "0.25.3"
+description = "Pytest support for asyncio"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pytest_asyncio-0.25.3-py3-none-any.whl", hash = "sha256:9e89518e0f9bd08928f97a3482fdc4e244df17529460bc038291ccaf8f85c7c3"},
+    {file = "pytest_asyncio-0.25.3.tar.gz", hash = "sha256:fc1da2cf9f125ada7e710b4ddad05518d4cee187ae9412e9ac9271003497f07a"},
+]
+
+[package.dependencies]
+pytest = ">=8.2,<9"
+
+[package.extras]
+docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1)"]
+testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
+
+[[package]]
+name = "pytest-trio"
+version = "0.8.0"
+description = "Pytest plugin for trio"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "pytest-trio-0.8.0.tar.gz", hash = "sha256:8363db6336a79e6c53375a2123a41ddbeccc4aa93f93788651641789a56fb52e"},
+    {file = "pytest_trio-0.8.0-py3-none-any.whl", hash = "sha256:e6a7e7351ae3e8ec3f4564d30ee77d1ec66e1df611226e5618dbb32f9545c841"},
+]
+
+[package.dependencies]
+outcome = ">=1.1.0"
+pytest = ">=7.2.0"
+trio = ">=0.22.0"
+
+[[package]]
+name = "pytest-twisted"
+version = "1.14.3"
+description = "A twisted plugin for pytest."
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
+groups = ["main"]
+files = [
+    {file = "pytest_twisted-1.14.3-py2.py3-none-any.whl", hash = "sha256:f2e3f3f6f12f78df17c028fe16d87af09c76b95a7a85bc378b2d3e73a086e81a"},
+    {file = "pytest_twisted-1.14.3.tar.gz", hash = "sha256:37e150cbbc0edba6592d36c53f44fc1196f3a9e93e7bef6a25bb10d9963f7f3e"},
+]
+
+[package.dependencies]
+decorator = "*"
+greenlet = "*"
+pytest = ">=2.3"
+
+[package.extras]
+dev = ["black", "pre-commit"]
+pyqt5 = ["qt5reactor[pyqt5] (>=0.6.2)"]
+pyside2 = ["qt5reactor[pyside2] (>=0.6.3)"]
+
+[[package]]
 name = "python-dotenv"
 version = "1.0.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -1244,6 +1329,18 @@ files = [
 ]
 
 [[package]]
+name = "sortedcontainers"
+version = "2.4.0"
+description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
+    {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
+]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.38"
 description = "Database Abstraction Library"
@@ -1356,6 +1453,26 @@ anyio = ">=3.6.2,<5"
 
 [package.extras]
 full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.18)", "pyyaml"]
+
+[[package]]
+name = "trio"
+version = "0.29.0"
+description = "A friendly Python library for async concurrency and I/O"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "trio-0.29.0-py3-none-any.whl", hash = "sha256:d8c463f1a9cc776ff63e331aba44c125f423a5a13c684307e828d930e625ba66"},
+    {file = "trio-0.29.0.tar.gz", hash = "sha256:ea0d3967159fc130acb6939a0be0e558e364fee26b5deeecc893a6b08c361bdf"},
+]
+
+[package.dependencies]
+attrs = ">=23.2.0"
+cffi = {version = ">=1.14", markers = "os_name == \"nt\" and implementation_name != \"pypy\""}
+idna = "*"
+outcome = "*"
+sniffio = ">=1.3.0"
+sortedcontainers = "*"
 
 [[package]]
 name = "twisted"
@@ -1500,4 +1617,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "8be38085a9fcfe485a366bce7f351857a6cec920a803c525aef7a2b02e9c9dc0"
+content-hash = "0276d63d16cb0b2ef458d4b9e6a8ae5f44887902aae95b49d4a75e1c4fabeef3"
