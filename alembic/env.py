@@ -2,7 +2,7 @@ import asyncio
 from logging.config import fileConfig
 from sqlalchemy.ext.asyncio import create_async_engine
 from alembic import context
-from settings import settings
+from app.settings import settings
 from models import Base  # Import your Base model which includes all your models
 
 # this is the Alembic Config object, which provides
