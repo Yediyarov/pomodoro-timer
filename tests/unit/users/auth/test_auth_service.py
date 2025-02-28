@@ -2,7 +2,8 @@ from app.settings import Settings
 from app.users.auth.service import AuthService
 from jose import jwt
 from datetime import datetime as dt, timedelta, timezone
-
+from app.users.user_profile.models import UserProfile
+from app.users.auth.schema import UserLoginSchema
 
 async def test_get_google_redirect_url__success(auth_service:AuthService, settings:Settings):
     setting_google_redirect_url = settings.get_google_redirect_url
@@ -38,6 +39,10 @@ async def test_get_user_id_from_token__success(auth_service:AuthService):
     
     
     
- 
-    
-    
+async def test_google_auth__success(auth_service:AuthService, user_profile:UserProfile):
+    code = 'fake_code'
+    user = await auth_service.google_auth(code=code)
+    decoded_user_id = auth_service.get_user_id_from_token(user.access_token)
+
+    assert isinstance(user, UserLoginSchema)
+    assert user.id == decoded_user_id
