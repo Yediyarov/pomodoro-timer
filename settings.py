@@ -1,10 +1,8 @@
 from enum import Enum
 import os
-from pydantic import Field, model_validator, ConfigDict
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings
 from typing import Optional
-
-
 class EnvironmentType(str, Enum):
     LOCAL = "local"
     PROD = "prod"
@@ -42,17 +40,16 @@ class Settings(BaseSettings):
     # Add this to store the current env file
     ENV_FILE: str = f".{os.getenv('ENV', 'local')}.env"
 
-    model_config = ConfigDict(
-        env_file=f".{os.getenv('ENV', 'local')}.env",
-        extra="allow"
-    )
+    class Config:
+        env_file = f".{os.getenv('ENV', 'local')}.env"
+        extra = "allow"
 
     @model_validator(mode='after')
     def validate_google_settings(self):
         if not all([self.GOOGLE_CLIENT_ID, self.GOOGLE_SECRET_KEY, self.GOOGLE_REDIRECT_URI]):
             raise ValueError(
                 "Required Google OAuth settings are missing. "
-                f"Please check your {self.ENV_FILE} file contains GOOGLE_CLIENT_ID, "
+                f"Please check your {self.Config.env_file} file contains GOOGLE_CLIENT_ID, "
                 "GOOGLE_SECRET_KEY, and GOOGLE_REDIRECT_URI"
             )
         return self
